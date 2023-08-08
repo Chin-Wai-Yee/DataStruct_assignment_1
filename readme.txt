@@ -1,6 +1,6 @@
 Practical Group: P24
 Practical Session: Thursday, 8AM - 10AM
-Tutor: 
+Tutor: Mr. Tou Jing Yi
 
 Group Member 1:
 
