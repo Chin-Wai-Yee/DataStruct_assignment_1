@@ -27,10 +27,11 @@ int getPosition(List*, char*);
 int split(string, const char*, char*[]);
 void DisplayStudents(ostream&, List*, int);
 void DisplayBooks(ostream&, LibStudent, int);
+bool existBook(LibStudent, LibBook);
 int toJulianDate(Date);
 double calculateFine(LibBook);
-int calculateTotalFineBooks(LibStudent &student);
-void updateCourseStatistics(List* list, const char* courseCode, int& numStudents, int& totalBooks, int& overdueBooks, double& totalFine);
+int calculateTotalFineBooks(LibStudent&);
+void updateCourseStatistics(List*, const char*, int&, int&, int&, double&);
 
 int main() {
 	
@@ -185,7 +186,13 @@ bool ReadFile(string filename, List *list) {
 		file >> student.phone_no;
 
 		// insert to list
-		list->insert(student);
+		if (getPosition(list, student.id) == -1) {
+			// the student is not in the list
+			list->insert(student);			
+		}
+		else {
+			cout << "Error : duplicate student id " << student.id << endl;
+		}
 	}
 
 	return true;
@@ -244,6 +251,15 @@ double calculateFine(LibBook book) {
 	return fine;
 }
 
+bool existBook(LibStudent student, LibBook book) {
+	for (int i = 0; i < student.totalbook; i++) {
+		if (student.book[i].compareCallNum(book)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool InsertBook(string filename, List* list) {
 	fstream file(filename, ios::in);
 
@@ -292,6 +308,11 @@ bool InsertBook(string filename, List* list) {
 
 		// calculate fine
 		book.fine = calculateFine(book);
+
+		if (existBook(student, book)) {
+			cout << "Error : duplicate book " << book.title << " for student " << student.id << endl;
+			continue;
+		}
 
 		// modify student's book and put it back
 		student.book[student.totalbook] = book;
