@@ -12,7 +12,7 @@ using namespace std;
 
 bool ReadFile(string, List *);
 bool DeleteRecord(List *, char *);
-bool Display(List, int, int);
+bool Display(List*, int, int);
 bool InsertBook(string, List *);
 bool SearchStudent(List *, char *id, LibStudent &);
 bool computeAndDisplayStatistics(List *);
@@ -23,10 +23,14 @@ int menu();
 // extra functions
 int getPosition(List*, char*);
 int split(string, const char*, char*[]);
+void DisplayStudents(ostream&, List*, int);
+void DisplayBooks(ostream&, LibStudent, int);
+int toJulianDate(Date);
+double calculateFine(LibBook);
 
 int main() {
 	
-	/* Uncomment this block to test the functions
+	// Uncomment this block to test the functions
 
 	// Test for file handling
 	List* student_list = new List();
@@ -44,19 +48,72 @@ int main() {
 	}
 
 	// Print out all students with their books
-	for (Node* cur = student_list->head; cur != NULL; cur = cur->next) {
-		cur->item.print(cout);
-		cout << endl;
-		cout << "Books:" << endl;
-		for (int i = 0; i < cur->item.totalbook; i++) {
-			cur->item.book[i].print(cout);
-		}
-	}
-	
-	*/
+	Display(student_list, 1, 1);
+	Display(student_list, 1, 2);
+	Display(student_list, 2, 1);
+	Display(student_list, 2, 2);
 
 	system("pause");
 	return 0;
+}
+
+bool Display(List* list, int source, int detail)
+{
+
+	if (list->empty()) {
+		cout << "Error : the list is empty.\n" << endl;
+		return false;
+	}
+
+	if (source == 1)
+	{
+		ofstream outFile;
+		if (detail == 1) {
+			outFile.open("student_booklist.txt");
+		}
+		else {
+			outFile.open("student_info.txt");
+		}
+		if (!outFile) {
+			cout << "Cannot open the file for writing. " << endl;
+			return false;
+		}
+		DisplayStudents(outFile, list, detail);
+	}
+	else {
+		DisplayStudents(cout, list, detail);
+	}
+
+	return true;
+}
+
+void DisplayStudents(ostream& out, List* list, int detail) {
+	int i = 1; // student number
+	Node* cur = list->head;
+	while (cur != NULL)
+	{
+		out << "\nSTUDENT " << i << endl;
+		cur->item.print(out);
+		DisplayBooks(out, cur->item, detail);
+		out << "\n************************************************" << endl;
+		i++;
+		cur = cur->next;
+	}
+}
+
+void DisplayBooks(ostream& out, LibStudent student, int detail) {
+	// early return on dont display books
+	if (detail == 2) {
+		return;
+	}
+
+	out << "\nBOOK LIST: " << endl;
+	for (int j = 0; j < student.totalbook; j++)
+	{
+		out << "Book " << j + 1 << endl;
+		student.book[j].print(out);
+		out << endl;
+	}
 }
 
 int getPosition(List* list, char* id) {
@@ -153,6 +210,35 @@ void ReadDate(string date_str, Date& date) {
 	}
 }
 
+int toJulianDate(Date date) {
+	int a = (14 - date.month) / 12;
+	int y = date.year + 4800 - a;
+	int m = date.month + 12 * a - 3;
+	int jdn = date.day + (153 * m + 2) / 5 + 365 * y + y / 4 - y / 100 + y / 400 - 32045;
+	return jdn;
+}
+
+double calculateFine(LibBook book) {
+	
+	// fine rate
+	const double fine_rate = 0.5;
+
+	// assume today is 29/3/2020
+	Date today;
+	today.day = 29;
+	today.month = 3;
+	today.year = 2020;
+
+
+	// calculate fine
+	double fine = 0;
+	int days = toJulianDate(today) - toJulianDate(book.due);
+	if (days > 0) {
+		fine = days * fine_rate;
+	}
+	return fine;
+}
+
 bool InsertBook(string filename, List* list) {
 	fstream file(filename, ios::in);
 
@@ -199,9 +285,13 @@ bool InsertBook(string filename, List* list) {
 		file >> dummy;
 		ReadDate(dummy, book.due);
 
+		// calculate fine
+		book.fine = calculateFine(book);
+
 		// modify student's book and put it back
 		student.book[student.totalbook] = book;
 		student.totalbook++;
+		student.calculateTotalFine();
 		list->set(position, student);
 	}
 }

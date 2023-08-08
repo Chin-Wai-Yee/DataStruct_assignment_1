@@ -10,6 +10,7 @@
         "variant": "cpp",
         "*.def": "cpp",
         "istream": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "typeinfo": "cpp"
     }
 }
