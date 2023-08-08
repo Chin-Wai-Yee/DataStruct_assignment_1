@@ -10,9 +10,9 @@ Course: CS
 
 Group Member 2:
 
-Name: 
-Student ID: 
-Course: 
+Name: Ooi Jun Lin
+Student ID: 2103905
+Course: IA
 
 Group Member 3:
 
