@@ -29,6 +29,7 @@ void DisplayStudents(ostream&, List*, int);
 void DisplayBooks(ostream&, LibStudent, int);
 bool existBook(LibStudent, LibBook);
 int toJulianDate(Date);
+int getOverdueDays(Date);
 double calculateFine(LibBook);
 int calculateTotalFineBooks(LibStudent&);
 void updateCourseStatistics(List*, const char*, int&, int&, int&, double&);
@@ -52,12 +53,20 @@ int main() {
 		return -1;
 	}
 
+	Display(student_list, 2, 2);
+
 	// Print out all students with their books
 	// Display(student_list, 1, 1);
 	// Display(student_list, 1, 2);
 	// Display(student_list, 2, 1);
 	// Display(student_list, 2, 2);
-	computeAndDisplayStatistics(student_list);
+	// computeAndDisplayStatistics(student_list);
+
+	// List* list1 = new List();
+	// List* list2 = new List();
+	// displayWarnedStudent(student_list, list1, list2);
+	// Display(list1, 2, 1);
+	// Display(list2, 2, 1);
 
 	system("pause");
 	return 0;
@@ -126,9 +135,10 @@ int getPosition(List* list, char* id) {
 
 	Node* cur = list->head; // current node
 
+	// Traverse the list to find the student
 	for (int count = 1; count <= list->size(); count++) {
 		if (strcmp(cur->item.id, id) == 0) {
-			// found, return
+			// Student with matching ID found
 			return count;
 		}
 		cur = cur->next;
@@ -186,7 +196,7 @@ bool ReadFile(string filename, List *list) {
 		file >> student.phone_no;
 
 		// insert to list
-		if (getPosition(list, student.id) == -1) {
+		if (!SearchStudent(list, student.id, student)) {
 			// the student is not in the list
 			list->insert(student);			
 		}
@@ -230,23 +240,27 @@ int toJulianDate(Date date) {
 	return jdn;
 }
 
-double calculateFine(LibBook book) {
-	
-	// fine rate
-	const double fine_rate = 0.5;
-
+int getOverdueDays(LibBook book) {
 	// assume today is 29/3/2020
 	Date today;
 	today.day = 29;
 	today.month = 3;
 	today.year = 2020;
 
+	int days = toJulianDate(today) - toJulianDate(book.due);
+	return days;
+}
+
+double calculateFine(LibBook book) {
+	
+	// fine rate
+	const double fine_rate = 0.5;
 
 	// calculate fine
 	double fine = 0;
-	int days = toJulianDate(today) - toJulianDate(book.due);
-	if (days > 0) {
-		fine = days * fine_rate;
+	int overdue = getOverdueDays(book);
+	if (overdue > 0) {
+		fine = overdue * fine_rate;
 	}
 	return fine;
 }
@@ -277,17 +291,6 @@ bool InsertBook(string filename, List* list) {
 
 		// get student id
 		file >> id;
-		int position = getPosition(list, id);
-		if (position == -1) {
-			cout << "Unable to find student with id : " << id << endl;
-			getline(file, dummy);
-			file.clear();
-			file.ignore();
-			continue;
-		}
-
-		// the student is in list, get it out
-		list->get(position, student);
 
 		// read book's authors
 		file >> dummy;
@@ -308,6 +311,13 @@ bool InsertBook(string filename, List* list) {
 
 		// calculate fine
 		book.fine = calculateFine(book);
+
+		int position = getPosition(list, id);
+		if (!SearchStudent(list, id, student)) {
+			// the student is not in list, skip this book
+			cout << "Unable to find student with id : " << id << endl;
+			continue;
+		}
 
 		if (existBook(student, book)) {
 			cout << "Error : duplicate book " << book.title << " for student " << student.id << endl;
@@ -385,4 +395,91 @@ void updateCourseStatistics(List* list, const char* courseCode, int& numStudents
 			}
 		}
 	}
+}
+
+bool DeleteRecord(List* list, char* id) {
+	if (list->empty()) {
+		cout << "\nCannot delete record from an Empty List\n";
+		return false;
+	}
+
+	LibStudent student;
+	SearchStudent(list, id, student);
+	int pos = getPosition(list, id);
+	if (pos == -1) {
+		cout << "\nThe student id is not founded.\n";
+		return false;
+	}
+
+	for (int i = 0; i < student.totalbook; i++) {
+		// delete the title of the book since it is dynamically allocated
+		for (char* author : student.book[i].author) {
+			delete[] author;
+		}
+	}
+	list->remove(pos);
+	list->count--;
+	return true;
+}
+
+bool displayWarnedStudent(List* list, List* type1, List* type2) {
+
+    if (list->empty()) {
+        cout << "\nCannot perform the analysis with an empty list\n";
+        return false;
+    }
+
+    Node* cur;
+    cur = list->head;
+    LibStudent Alvin;
+    LibStudent empty;
+    while (cur != NULL) {
+        int count = 0;
+        int y = 0;
+        // check if the student has 2 or more books overdue for 10 days
+        for (y = 0; y < cur->item.totalbook; y++) {
+            // overdue 10 days so fine is 10 * 0.5 = 5
+            if (cur->item.book[y].fine > 5) {
+                count++;
+                if (count >= 2) {
+                    Alvin = cur->item;
+                    type1->insert(Alvin);
+                    break;
+                }
+            }
+        }
+        count = 0;
+        for (y = 0; y < cur->item.totalbook; y++) {
+            if (cur->item.book[y].fine > 0) {
+                count++;
+            }
+        }
+        if (cur->item.total_fine >= 50 && cur->item.totalbook == count) {
+            Alvin = cur->item;
+            type2->insert(Alvin);
+        }
+        cur = cur->next;
+    }
+    
+    return true;
+}
+
+bool SearchStudent(List* list, char* id, LibStudent &stu) {
+	if (list->empty()) {
+		// cout << "The list is EMPTY.\n";
+		return false;
+	}
+
+	struct Node *current = list->head;
+	// Traverse the list to find the student
+	int pos = getPosition(list, id);
+	if (pos != -1) {
+		// Student with matching ID found
+		list->get(pos, stu);
+		return true;
+	}
+	// Student not found
+	// cout << "Student with ID " << id << "not founded.\n";
+
+	return false;
 }
