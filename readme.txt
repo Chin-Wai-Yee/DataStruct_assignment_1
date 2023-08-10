@@ -22,12 +22,12 @@ Course: CN
 
 Group Member 4:
 
-Name: 
-Student ID: 
-Course: 
+Name: Alvin Yeon Kah Kit
+Student ID: 1906486
+Course: IA
 
 Group Member 5:
 
-Name: 
-Student ID: 
-Course: 
+Name: Fong Yu Qi
+Student ID: 2003659
+Course: IA
