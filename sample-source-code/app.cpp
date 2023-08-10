@@ -483,3 +483,44 @@ bool SearchStudent(List* list, char* id, LibStudent &stu) {
 
 	return false;
 }
+
+bool printStuWithSameBook(List *list, char *callNum) {
+	if (list->empty()) {
+		cout << "The list is empty.\n";
+		return false; // Return false if the list is empty
+	}
+
+	bool found = false;
+
+	Node* currentNode = list->head;
+	while (currentNode != NULL) {
+		LibStudent student = currentNode->item;
+
+		for (int i = 0; i < student.totalbook; i++) {
+			if (strcmp(student.book[i].callNum, callNum) == 0) {
+				if (!found) {
+					cout << "There are students that borrow the book with call number " << callNum << " as shown below:\n\n";
+					found = true;
+				}
+
+				cout << "Student Id = " << student.id << "\n";
+				cout << "Name = " << student.name << "\n";
+				cout << "Course = " << student.course << "\n";
+				cout << "Phone Number = " << student.phone_no << "\n";
+				cout << "Borrow Date: ";
+				student.book[i].borrow.print(cout);
+				cout << "\nDue Date: ";
+				student.book[i].due.print(cout);
+				cout << "\n\n";
+			}
+		}
+
+		currentNode = currentNode->next;
+	}
+
+	if (!found) {
+		cout << "There is no students found who borrowed the book with the specified call number.\n";
+	}
+
+	return found;
+}
