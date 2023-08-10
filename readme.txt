@@ -16,9 +16,9 @@ Course: IA
 
 Group Member 3:
 
-Name: 
-Student ID: 
-Course: 
+Name: Chun Cheng long
+Student ID: 2004768
+Course: CN
 
 Group Member 4:
 
