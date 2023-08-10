@@ -32,7 +32,7 @@ Name: Fong Yu Qi
 Student ID: 2003659
 Course: IA
 
-Group Member 5:
+Group Member 6:
 
 Name: Hew Yen Ming
 Student ID: 1800230
