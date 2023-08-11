@@ -16,18 +16,24 @@ Course: IA
 
 Group Member 3:
 
-Name: 
-Student ID: 
-Course: 
+Name: Chun Cheng long
+Student ID: 2004768
+Course: CN
 
 Group Member 4:
 
-Name: 
-Student ID: 
-Course: 
+Name: Alvin Yeon Kah Kit
+Student ID: 1906486
+Course: IA
 
 Group Member 5:
 
-Name: 
-Student ID: 
-Course: 
+Name: Fong Yu Qi
+Student ID: 2003659
+Course: IA
+
+Group Member 6:
+
+Name: Hew Yen Ming
+Student ID: 1800230
+Course: IA
