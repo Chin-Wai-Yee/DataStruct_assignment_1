@@ -20,132 +20,195 @@ bool SearchStudent(List *, char *id, LibStudent &);
 bool computeAndDisplayStatistics(List *);
 bool printStuWithSameBook(List *, char *);
 bool displayWarnedStudent(List *, List *, List *);
-int menu();
+int  menu();
 
 // extra functions
-int getPosition(List*, char*);
-int split(string, const char*, char*[]);
+
+bool mainMenu(List&);
+int  getPosition(List*, char*);
 void DisplayStudents(ostream&, List*, int);
 void DisplayBooks(ostream&, LibStudent, int);
+int  split(string, const char*, char*[]);
 bool existBook(LibStudent, LibBook);
-int toJulianDate(Date);
-int getOverdueDays(Date);
+int  toJulianDate(Date);
+int  getOverdueDays(Date);
 double calculateFine(LibBook);
-int calculateTotalFineBooks(LibStudent&);
+int  calculateTotalFineBooks(LibStudent&);
 void updateCourseStatistics(List*, const char*, int&, int&, int&, double&);
 
 int main() {
+    List student_list;
 
-    List* student_list = new List();
-	char student_id[10];
-	char bookCallNumToFind[20];
-	LibStudent student;
-	List* type1 = new List();
-	List* type2 = new List();
-
-    while (true) {
-
-        int choice = menu();
-
-        switch (choice) {
-			case 1:
-				if (!ReadFile("../sample-text-files/student.txt", student_list)) {
-					cout << "Error while opening the file" << endl;
-					cout << "Current working directory : ";
-					system("cd");
-					cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
-					return -1;
-				}
-				break;
-			case 2:
-				// Implement code to delete record
-				cout << "Enter the student ID to delete:";
-				cin >> student_id;
-				DeleteRecord(student_list, student_id);
-				break;
-			case 3:
-				cout << "Enter the student ID to search:";
-				cin >> student_id;
-				if (SearchStudent(student_list, student_id, student)) {
-					student.print(cout);
-				}
-				else {
-					cout << "Student not found" << endl;
-				}
-				break;
-			case 4:
-				if (!InsertBook("../sample-text-files/book.txt", student_list)) {
-					cout << "Insert book failed" << endl;
-					return -1;
-				}
-				break;
-			case 5:
-				cout << "Enter the output source (1 - file, 2 - screen):";
-				int output_source;
-				cin >> output_source;
-				cout << "Do you want to display the book list (1 - yes, 2 - no):";
-				int display_book_list;
-				cin >> display_book_list;
-				Display(student_list, output_source, display_book_list);
-				break;
-			case 6:
-				if(!computeAndDisplayStatistics(student_list)) {
-					cout << "The list is empty" << endl;
-				}
-				break;
-			case 7:
-				cout << "Enter the book call number to find students: ";
-				cin >> bookCallNumToFind;
-				printStuWithSameBook(student_list, bookCallNumToFind); // Pass the bookCallNumToFind to the function
-				break;
-			case 8:
-				displayWarnedStudent(student_list, type1, type2);
-				cout << "Type 1: " << endl;
-				Display(type1, 2, 1);
-				cout << "Type 2: " << endl;
-				Display(type2, 2, 1);
-				break;
-			case 9:
-				cout << "Exiting the program. Goodbye!" << endl;
-				return 0;
-        }
+    while (mainMenu(student_list)) {
         system("pause");
     }
-	delete student_list;
-	delete type1;
-	delete type2;
-	cout << "\n\n";
-	system("pause");
+
 	return 0;
+}
+
+bool mainMenu(List& student_list) {
+
+	system("cls");
+
+	switch (menu()) {
+		case 1: { // read file
+			if (!ReadFile("../sample-text-files/student.txt", &student_list)) {
+				cout << "\nError while opening the file" << endl;
+				cout << "Current working directory : ";
+				system("cd");
+				cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
+			}
+			else {
+				cout << "\nFile read successfully" << endl;
+			}
+			break;
+		}
+		case 2: { // delete record 
+			cout << "Enter the student ID to delete:";
+			char student_id[10];
+			cin >> student_id;
+			if (!DeleteRecord(&student_list, student_id)) {
+				cout << "\nThe student id is not found, fail to delete.\n";
+			}
+			break;
+		}
+		case 3: { // search student with id
+			cout << "Enter the student ID to search:";
+			char student_id[10];
+			cin >> student_id;
+			LibStudent student;
+			if (SearchStudent(&student_list, student_id, student)) {
+				student.print(cout);
+			}
+			else {
+				cout << "\nStudent not found" << endl;
+			}
+			break;
+		}
+		case 4: { // insert book from file
+			if (!InsertBook("../sample-text-files/book.txt", &student_list)) {
+				cout << "\nInsert book failed, the input file cannot be found" << endl;
+				cout << "Current working directory : ";
+				system("cd");
+				cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
+			}
+			else {
+				cout << "\nInsert book successfully" << endl;
+			}
+			break;
+		}
+		case 5: { // display 
+			cout << "Enter the output source (1 - file, 2 - screen):";
+			int output_source;
+			cin >> output_source;
+			cout << "Do you want to display the book list (1 - yes, 2 - no):";
+			int display_book_list;
+			cin >> display_book_list;
+			Display(&student_list, output_source, display_book_list);
+			break;
+		}
+		case 6: { // compute and display statistics
+			if(!computeAndDisplayStatistics(&student_list)) {
+				cout << "\nThe list is empty" << endl;
+			}
+			break;
+		}
+		case 7: { // print student with same book
+			cout << "Enter the book call number to find students: ";
+			char bookCallNumToFind[20];
+			cin >> bookCallNumToFind;
+			printStuWithSameBook(&student_list, bookCallNumToFind); // Pass the bookCallNumToFind to the function
+			break;
+		}
+		case 8: { // display warned student
+			List type1;
+			List type2;
+			if (displayWarnedStudent(&student_list, &type1, &type2)) {
+				system("cls");
+				cout << "\nType 1: " << endl;
+				Display(&type1, 2, 1);
+				cout << "\nType 2: " << endl;
+				Display(&type2, 2, 1);
+			}
+			else {
+				cout << "\nCannot perform the analysis with an empty list\n";
+			}
+			break;
+		}
+		case 9: { // exit
+			cout << "\nExiting the program. Goodbye!" << endl;
+			return false;
+		}
+		default: { // invalid 
+			cout << "\nInvalid choice" << endl;
+			break;
+		}
+	}
+
+	return true;
 }
 
 int menu() {
     int choice;
-
-    system("cls");
-
-    cout << "Menu:" << endl;
-    cout << "1. Read file" << endl;
-    cout << "2. Delete record" << endl;
-    cout << "3. Search student" << endl;
-    cout << "4. Insert book" << endl;
-    cout << "5. Display output" << endl;
-    cout << "6. Compute and Display Statistics" << endl;
-    cout << "7. Student with Same Book" << endl;
-    cout << "8. Display Warned Student" << endl;
-    cout << "9. Exit" << endl;
-
-    cout << "Enter your choice: ";
-    cin >> choice;
-
-    if (choice < 1 || choice > 9) {
-        cout << "Invalid choice. Please choose again." <<endl;
-    }
-    else {
-        return choice;
-    }
+	// choices
+	cout << "Menu :" << endl;
+	cout << endl;
+	cout << "1. Read file" << endl;
+	cout << "2. Delete record" << endl;
+	cout << "3. Search student" << endl;
+	cout << "4. Insert book" << endl;
+	cout << "5. Display output" << endl;
+	cout << "6. Compute and Display Statistics" << endl;
+	cout << "7. Student with Same Book" << endl;
+	cout << "8. Display Warned Student" << endl;
+	cout << "9. Exit" << endl;
+	cout << endl;
+	cout << "Enter your choice: ";
+	cin >> choice;
 
     return choice;
+}
+
+bool ReadFile(string filename, List *list) {
+	fstream file(filename, ios::in);
+	if (!file) {
+		file.close();
+		return false;
+	}
+
+	LibStudent student;
+	string dummy;
+
+	while (!file.eof()) {
+
+		// read id
+		file >> dummy >> dummy >> dummy;
+		file >> student.id;
+
+		// read name
+		file >> dummy >> dummy;
+		file.ignore();
+		// ^ got a space before the name, cin ignore it but
+		//   getline will get the whitespace so ignore it first
+		file.getline(student.name, 30);
+
+		// read course and phone no
+		file >> dummy >> dummy;
+		file >> student.course;
+		file >> dummy >> dummy >> dummy;
+		file >> student.phone_no;
+
+		// insert to list
+		if (!SearchStudent(list, student.id, student)) {
+			// the student is not in the list
+			list->insert(student);			
+		}
+		else {
+			cout << "Error : duplicate student id " << student.id << endl;
+		}
+	}
+
+	return true;
 }
 
 bool Display(List* list, int source, int detail)
@@ -157,7 +220,9 @@ bool Display(List* list, int source, int detail)
 
 	if (source == 1)
 	{
+		// output is file
 		ofstream outFile;
+		// open respective file according to detail
 		if (detail == 1) {
 			outFile.open("student_booklist.txt");
 		}
@@ -171,6 +236,7 @@ bool Display(List* list, int source, int detail)
 		DisplayStudents(outFile, list, detail);
 	}
 	else {
+		// output is screen
 		DisplayStudents(cout, list, detail);
 	}
 
@@ -182,6 +248,7 @@ void DisplayStudents(ostream& out, List* list, int detail) {
 	Node* cur = list->head;
 	while (cur != NULL)
 	{
+		// print student info
 		out << "\nSTUDENT " << i << endl;
 		cur->item.print(out);
 		DisplayBooks(out, cur->item, detail);
@@ -200,6 +267,7 @@ void DisplayBooks(ostream& out, LibStudent student, int detail) {
 	out << "\nBOOK LIST: " << endl;
 	for (int j = 0; j < student.totalbook; j++)
 	{
+		// print book info
 		out << "Book " << j + 1 << endl;
 		student.book[j].print(out);
 		out << endl;
@@ -241,50 +309,8 @@ int split(string str, const char* delim, char* output[]) {
 	return count;
 }
 
-bool ReadFile(string filename, List *list) {
-	fstream file(filename, ios::in);
-	if (!file) {
-		file.close();
-		return false;
-	}
-
-	LibStudent student;
-	string dummy;
-
-	while (!file.eof()) {
-
-		// read id
-		file >> dummy >> dummy >> dummy;
-		file >> student.id;
-
-		// read name
-		file >> dummy >> dummy;
-		file.ignore();
-		// ^ got a space before the name,
-		//   getline will get the whitespace
-		file.getline(student.name, 30);
-
-		// read course and phone no
-		file >> dummy >> dummy;
-		file >> student.course;
-		file >> dummy >> dummy >> dummy;
-		file >> student.phone_no;
-
-		// insert to list
-		if (!SearchStudent(list, student.id, student)) {
-			// the student is not in the list
-			list->insert(student);			
-		}
-		else {
-			cout << "Error : duplicate student id " << student.id << endl;
-		}
-	}
-
-	return true;
-}
-
+// insert book to student
 void AddBook(LibStudent& student, LibBook book) {
-
 	int count = student.totalbook;
 	student.book[count] = book;
 	student.totalbook = count + 1;
@@ -307,6 +333,7 @@ void ReadDate(string date_str, Date& date) {
 	}
 }
 
+// convert date to julian date
 int toJulianDate(Date date) {
 	int a = (14 - date.month) / 12;
 	int y = date.year + 4800 - a;
@@ -340,6 +367,7 @@ double calculateFine(LibBook book) {
 	return fine;
 }
 
+// check if the book is already in the student's book list
 bool existBook(LibStudent student, LibBook book) {
 	for (int i = 0; i < student.totalbook; i++) {
 		if (student.book[i].compareCallNum(book)) {
@@ -409,17 +437,58 @@ bool InsertBook(string filename, List* list) {
 	return true;
 }
 
+bool DeleteRecord(List* list, char* id) {
+	if (list->empty()) {
+		return false;
+	}
+
+	LibStudent student;
+	SearchStudent(list, id, student);
+	int pos = getPosition(list, id);
+	// student not found
+	if (pos == -1) {
+		return false;
+	}
+
+	for (int i = 0; i < student.totalbook; i++) {
+		// delete the title of the book since it is dynamically allocated
+		for (char* author : student.book[i].author) {
+			delete[] author;
+		}
+	}
+	list->remove(pos);
+	list->count--;
+	return true;
+}
+
+bool SearchStudent(List* list, char* id, LibStudent &stu) {
+	if (list->empty()) {
+		return false;
+	}
+
+	struct Node *current = list->head;
+	// Traverse the list to find the student
+	int pos = getPosition(list, id);
+	if (pos != -1) {
+		// Student with matching ID found
+		list->get(pos, stu);
+		return true;
+	}
+	
+	// not found
+	return false;
+}
+
 bool computeAndDisplayStatistics(List* list)
 {
+	// early return if list is empty
+	if (list->empty())
+		return false;
+
 	int numCS = 0, numIA = 0, numIB = 0, numCN = 0, numCT = 0;
 	int totalBooksCS = 0, totalBooksIA = 0, totalBooksIB = 0, totalBooksCN = 0, totalBooksCT = 0;
 	int overdueBooksCS = 0, overdueBooksIA = 0, overdueBooksIB = 0, overdueBooksCN = 0, overdueBooksCT = 0;
 	double totalFineCS = 0.0, totalFineIA = 0.0, totalFineIB = 0.0, totalFineCN = 0.0, totalFineCT = 0.0;
-
-
-	//if list is empty
-	if (list->empty())
-		return false;
 
 	// Update statistics for each course using the new function
 	updateCourseStatistics(list, "CS", numCS, totalBooksCS, overdueBooksCS, totalFineCS);
@@ -474,93 +543,6 @@ void updateCourseStatistics(List* list, const char* courseCode, int& numStudents
 	}
 }
 
-bool DeleteRecord(List* list, char* id) {
-	if (list->empty()) {
-		cout << "\nCannot delete record from an Empty List\n";
-		return false;
-	}
-
-	LibStudent student;
-	SearchStudent(list, id, student);
-	int pos = getPosition(list, id);
-	if (pos == -1) {
-		cout << "\nThe student id is not founded.\n";
-		return false;
-	}
-
-	for (int i = 0; i < student.totalbook; i++) {
-		// delete the title of the book since it is dynamically allocated
-		for (char* author : student.book[i].author) {
-			delete[] author;
-		}
-	}
-	list->remove(pos);
-	list->count--;
-	return true;
-}
-
-bool displayWarnedStudent(List* list, List* type1, List* type2) {
-
-    if (list->empty()) {
-        cout << "\nCannot perform the analysis with an empty list\n";
-        return false;
-    }
-
-    Node* cur;
-    cur = list->head;
-    LibStudent Alvin;
-    LibStudent empty;
-    while (cur != NULL) {
-        int count = 0;
-        int y = 0;
-        // check if the student has 2 or more books overdue for 10 days
-        for (y = 0; y < cur->item.totalbook; y++) {
-            // overdue 10 days so fine is 10 * 0.5 = 5
-            if (cur->item.book[y].fine > 5) {
-                count++;
-                if (count >= 2) {
-                    Alvin = cur->item;
-                    type1->insert(Alvin);
-                    break;
-                }
-            }
-        }
-        count = 0;
-        for (y = 0; y < cur->item.totalbook; y++) {
-            if (cur->item.book[y].fine > 0) {
-                count++;
-            }
-        }
-        if (cur->item.total_fine >= 50 && cur->item.totalbook == count) {
-            Alvin = cur->item;
-            type2->insert(Alvin);
-        }
-        cur = cur->next;
-    }
-    
-    return true;
-}
-
-bool SearchStudent(List* list, char* id, LibStudent &stu) {
-	if (list->empty()) {
-		// cout << "The list is EMPTY.\n";
-		return false;
-	}
-
-	struct Node *current = list->head;
-	// Traverse the list to find the student
-	int pos = getPosition(list, id);
-	if (pos != -1) {
-		// Student with matching ID found
-		list->get(pos, stu);
-		return true;
-	}
-	// Student not found
-	// cout << "Student with ID " << id << "not founded.\n";
-
-	return false;
-}
-
 bool printStuWithSameBook(List *list, char *callNum) {
 	if (list->empty()) {
 		cout << "The list is empty.\n";
@@ -600,4 +582,39 @@ bool printStuWithSameBook(List *list, char *callNum) {
 	}
 
 	return found;
+}
+
+bool displayWarnedStudent(List* list, List* type1, List* type2) {
+
+    if (list->empty()) {
+        return false;
+    }
+
+    Node* cur;
+    cur = list->head;
+    LibStudent Alvin;
+    while (cur != NULL) {
+        int count = 0;
+        int y = 0;
+        // check if the student has 2 or more books overdue for 10 days
+        for (y = 0; y < cur->item.totalbook; y++) {
+            // overdue 10 days so fine is 10 * 0.5 = 5
+            if (cur->item.book[y].fine > 5) {
+                count++;
+                if (count >= 2) {
+                    Alvin = cur->item;
+                    type1->insert(Alvin);
+                    break;
+                }
+            }
+        }
+        count = calculateTotalFineBooks(cur->item);
+        if (cur->item.total_fine >= 50 && count == cur->item.totalbook) {
+            Alvin = cur->item;
+            type2->insert(Alvin);
+        }
+        cur = cur->next;
+    }
+    
+    return true;
 }
