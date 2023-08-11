@@ -1,0 +1,58 @@
+1200233	 Noel_Kalicharan Advanced_topics_in_C:_Core_Concepts_in_Data_Structures Apress 2361589071 2013 QA76.73.C15K35 12/2/2020  12/3/2020
+	
+
+1201237	 Tony_Gaddis/Godfrey_Muganda Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures Addison-Wesley 0321545869 2011 QA76.73.C153S26 30/2/2020 30/3/2020	
+
+
+1300899	 Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 27/2/2020 27/3/2020  
+
+
+2106666 Nell_Dale/Daniel_Joyce/Chip_Weems Object-Oriented_Data_Structures_Using_Java Jones_&_Bartlett_Learning 1449613543 2011 QA76.58.M532 25/12/2019 1/1/2020 
+
+
+2104100 Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 27/2/2020 1/1/2019
+
+
+1200233	 Nell_Dale/Daniel_Joyce/Chip_Weems Object-Oriented_Data_Structures_Using_Java Jones_&_Bartlett_Learning 1449613543 2011 QA76.58.M532 20/1/2020 20/2/2020 
+
+
+1201237  Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 29/2/2020 29/3/2020  
+
+
+1200233	 Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 13/3/2020 13/4/2020  
+
+
+1502378	 Noel_Kalicharan Advanced_topics_in_C:_Core_Concepts_in_Data_Structures Apress 2361589071 2013 QA76.73.C15K35 12/3/2020  12/4/2020
+	
+
+1603679	 Tony_Gaddis/Godfrey_Muganda Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures Addison-Wesley 0321545869 2011 QA76.73.C153S26 17/2/2020 17/3/2020	
+
+
+1603679	 Noel_Kalicharan Advanced_topics_in_C:_Core_Concepts_in_Data_Structures Apress 2361589071 2013 QA76.73.C15K35 26/3/2020  26/4/2020
+
+
+2106666 Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 13/3/2020 1/4/2020
+
+
+1310983	 Noel_Kalicharan Advanced_topics_in_C:_Core_Concepts_in_Data_Structures Apress 2361589071 2013 QA76.73.C15K35 28/2/2020 28/3/2020  
+
+
+1502378	 Nell_Dale/Daniel_Joyce/Chip_Weems Object-Oriented_Data_Structures_Using_Java Jones_&_Bartlett_Learning 1449613543 2011 QA76.58.M532 9/2/2020 9/3/2020 
+
+
+1603679  Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 29/2/2020 29/3/2020  
+
+
+1310983 Micheal_Main/Walter_Savitch Data_Structures_and_Other_Objects_Using_C++ Prentice_Hall 0132129485 2010 QA76.73.C153N868 20/3/2020 20/4/2020  
+
+
+2106666 Noel_Kalichakan Advanced_topics_in_C:_Core_Concepts_in_Data_Structures Apress 2361589071 2013 QA76.73.C15K35 1/5/2019 1/6/2019
+
+
+2106666 Tony_Gaddis/Godfrey_Muganda Starting_Out_with_Java:From_Control_Structures_Through_Data_Structures Addison-Wesley 0321545869 2011 QA76.73.C153S26 17/2/2020 1/3/2020
+
+
+2114514 Senpai From_Beginner_To_Fail:How_To_Get_F_In_Programming UniFail 0321545869 2011 QA76.73.C114S87 17/2/2020 1/3/2017
+
+
+2114514 Senpai Live_Like_Loser:The_Art_Of_Giving_Up UniFail 0321545869 2011 QA76.73.B114S87 17/2/2020 2/3/2017
