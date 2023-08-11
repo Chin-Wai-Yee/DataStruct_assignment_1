@@ -35,48 +35,123 @@ int calculateTotalFineBooks(LibStudent&);
 void updateCourseStatistics(List*, const char*, int&, int&, int&, double&);
 
 int main() {
-	
-	// Uncomment this block to test the functions
 
-	// Test for file handling
-	List* student_list = new List();
-	if (!ReadFile("../sample-text-files/student.txt", student_list)) {
-		cout << "Error while opening the file" << endl;
-		cout << "Current working directory : ";
-		system("cd");
-		cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
-		return -1;
-	}
+    List* student_list = new List();
+	char student_id[10];
+	char bookCallNumToFind[20];
+	LibStudent student;
+	List* type1 = new List();
+	List* type2 = new List();
 
-	if (!InsertBook("../sample-text-files/book.txt", student_list)) {
-		cout << "Insert book failed" << endl;
-		return -1;
-	}
+    while (true) {
 
-	Display(student_list, 2, 2);
+        int choice = menu();
 
-	// Print out all students with their books
-	// Display(student_list, 1, 1);
-	// Display(student_list, 1, 2);
-	// Display(student_list, 2, 1);
-	// Display(student_list, 2, 2);
-	// computeAndDisplayStatistics(student_list);
-
-	// List* list1 = new List();
-	// List* list2 = new List();
-	// displayWarnedStudent(student_list, list1, list2);
-	// Display(list1, 2, 1);
-	// Display(list2, 2, 1);
-
+        switch (choice) {
+			case 1:
+				if (!ReadFile("../sample-text-files/student.txt", student_list)) {
+					cout << "Error while opening the file" << endl;
+					cout << "Current working directory : ";
+					system("cd");
+					cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
+					return -1;
+				}
+				break;
+			case 2:
+				// Implement code to delete record
+				cout << "Enter the student ID to delete:";
+				cin >> student_id;
+				DeleteRecord(student_list, student_id);
+				break;
+			case 3:
+				cout << "Enter the student ID to search:";
+				cin >> student_id;
+				if (SearchStudent(student_list, student_id, student)) {
+					student.print(cout);
+				}
+				else {
+					cout << "Student not found" << endl;
+				}
+				break;
+			case 4:
+				if (!InsertBook("../sample-text-files/book.txt", student_list)) {
+					cout << "Insert book failed" << endl;
+					return -1;
+				}
+				break;
+			case 5:
+				cout << "Enter the output source (1 - file, 2 - screen):";
+				int output_source;
+				cin >> output_source;
+				cout << "Do you want to display the book list (1 - yes, 2 - no):";
+				int display_book_list;
+				cin >> display_book_list;
+				Display(student_list, output_source, display_book_list);
+				break;
+			case 6:
+				if(!computeAndDisplayStatistics(student_list)) {
+					cout << "The list is empty" << endl;
+				}
+				break;
+			case 7:
+				cout << "Enter the book call number to find students: ";
+				cin >> bookCallNumToFind;
+				printStuWithSameBook(student_list, bookCallNumToFind); // Pass the bookCallNumToFind to the function
+				break;
+			case 8:
+				displayWarnedStudent(student_list, type1, type2);
+				cout << "Type 1: " << endl;
+				Display(type1, 2, 1);
+				cout << "Type 2: " << endl;
+				Display(type2, 2, 1);
+				break;
+			case 9:
+				cout << "Exiting the program. Goodbye!" << endl;
+				return 0;
+        }
+        system("pause");
+    }
+	delete student_list;
+	delete type1;
+	delete type2;
+	cout << "\n\n";
 	system("pause");
 	return 0;
+}
+
+int menu() {
+    int choice;
+
+    system("cls");
+
+    cout << "Menu:" << endl;
+    cout << "1. Read file" << endl;
+    cout << "2. Delete record" << endl;
+    cout << "3. Search student" << endl;
+    cout << "4. Insert book" << endl;
+    cout << "5. Display output" << endl;
+    cout << "6. Compute and Display Statistics" << endl;
+    cout << "7. Student with Same Book" << endl;
+    cout << "8. Display Warned Student" << endl;
+    cout << "9. Exit" << endl;
+
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    if (choice < 1 || choice > 9) {
+        cout << "Invalid choice. Please choose again." <<endl;
+    }
+    else {
+        return choice;
+    }
+
+    return choice;
 }
 
 bool Display(List* list, int source, int detail)
 {
 
 	if (list->empty()) {
-		cout << "Error : the list is empty.\n" << endl;
 		return false;
 	}
 
@@ -330,6 +405,8 @@ bool InsertBook(string filename, List* list) {
 		student.calculateTotalFine();
 		list->set(position, student);
 	}
+
+	return true;
 }
 
 bool computeAndDisplayStatistics(List* list)
