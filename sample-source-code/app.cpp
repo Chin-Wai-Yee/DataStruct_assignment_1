@@ -52,14 +52,14 @@ bool mainMenu(List& student_list) {
 
 	switch (menu()) {
 		case 1: { // read file
-			if (!ReadFile("../sample-text-files/student.txt", &student_list)) {
+			if (!ReadFile("student.txt", &student_list)) {
 				cout << "\nError while opening the file" << endl;
 				cout << "Current working directory : ";
 				system("cd");
 				cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
 			}
 			else {
-				cout << "\nFile read successfully" << endl;
+				cout << "\nDone file reading" << endl;
 			}
 			break;
 		}
@@ -86,14 +86,14 @@ bool mainMenu(List& student_list) {
 			break;
 		}
 		case 4: { // insert book from file
-			if (!InsertBook("../sample-text-files/book.txt", &student_list)) {
+			if (!InsertBook("book.txt", &student_list)) {
 				cout << "\nInsert book failed, the input file cannot be found" << endl;
 				cout << "Current working directory : ";
 				system("cd");
 				cout << "Do check the code to make sure that you entered the right path for the function call" << endl;
 			}
 			else {
-				cout << "\nInsert book successfully" << endl;
+				cout << "\nDone book insertion" << endl;
 			}
 			break;
 		}
@@ -126,9 +126,13 @@ bool mainMenu(List& student_list) {
 			if (displayWarnedStudent(&student_list, &type1, &type2)) {
 				system("cls");
 				cout << "\nType 1: " << endl;
-				Display(&type1, 2, 1);
+				if (!Display(&type1, 2, 1)) {
+					cout << "\nNo student found.\n";
+				}
 				cout << "\nType 2: " << endl;
-				Display(&type2, 2, 1);
+				if(!Display(&type2, 2, 1)) {
+					cout << "\nNo student found.\n";
+				}
 			}
 			else {
 				cout << "\nCannot perform the analysis with an empty list\n";
@@ -515,7 +519,7 @@ int calculateTotalFineBooks(LibStudent &student)
 {
 	int totaloverduebooks = 0;
 
-	for (int i = 1; i <= student.totalbook; i++)
+	for (int i = 0; i < student.totalbook; i++)
 	{
 		if (student.book[i].fine > 0)
 			totaloverduebooks++;
